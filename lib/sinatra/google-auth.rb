@@ -55,9 +55,7 @@ module Sinatra
       app.helpers GoogleAuth::Helpers
       app.use ::Rack::Session::Cookie, :secret => secret
       app.use ::OmniAuth::Builder do
-        provider :google_oauth2,
-                 client_id: ENV['GOOGLE_CLIENT_ID'], client_secret: ENV['GOOGLE_CLIENT_SECRET'],
-                 allowed_request_methods: [:get, :post]
+        provider :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET']
       end
       
       app.set :absolute_redirect, false
