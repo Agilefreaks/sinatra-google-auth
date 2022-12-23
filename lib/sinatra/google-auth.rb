@@ -59,6 +59,33 @@ module Sinatra
       end
       
       app.set :absolute_redirect, false
+
+      app.get "/auth/google_oauth2" do
+        <<-HTML
+        <html>
+          <head>
+            <script>
+              window.onload = function() {
+                var form = document.createElement('form');
+                form.setAttribute('method', 'post');
+                form.setAttribute('action', '/auth/google_oauth2');
+
+                var input = document.createElement('input')
+                input.setAttribute('type', 'hidden');
+                input.setAttribute('name', 'authenticity_token')
+                input.setAttribute('value', '#{env['rack.session'][:csrf]}')
+                
+                form.appendChild(input);
+
+                document.body.appendChild(form);
+                form.submit();
+              }
+            </script>
+          </head>
+          <body></body>
+        </html>
+        HTML
+      end
       
       app.get "/auth/:provider/callback" do
         handle_authentication_callback
