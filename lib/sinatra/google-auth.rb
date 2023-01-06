@@ -60,6 +60,14 @@ module Sinatra
       
       app.set :absolute_redirect, false
 
+      app.get "/auth/:provider/callback" do
+        handle_authentication_callback
+      end
+      
+      app.post "/auth/:provider/callback" do
+        handle_authentication_callback
+      end
+
       app.get "/auth/google_oauth2" do
         <<-HTML
         <html>
@@ -73,7 +81,7 @@ module Sinatra
                 var input = document.createElement('input')
                 input.setAttribute('type', 'hidden');
                 input.setAttribute('name', 'authenticity_token')
-                input.setAttribute('value', '#{env['rack.session'][:csrf]}')
+                input.setAttribute('value', '#{Rack::Protection::AuthenticityToken.token(env['rack.session'])}')
                 
                 form.appendChild(input);
 
@@ -85,14 +93,6 @@ module Sinatra
           <body></body>
         </html>
         HTML
-      end
-      
-      app.get "/auth/:provider/callback" do
-        handle_authentication_callback
-      end
-      
-      app.post "/auth/:provider/callback" do
-        handle_authentication_callback
       end
     end
   end
